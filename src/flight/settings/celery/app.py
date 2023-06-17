@@ -26,6 +26,11 @@ def autodiscover_tasks() -> List[str]:
 
 
 def make_celery(app: Flask) -> Celery:
+    from ddtrace import config, patch
+
+    patch(celery=True)
+    config.celery["worker_service_name"] = "flight-worker"
+
     class FlaskTask(Task):
         def __call__(self, *args: object, **kwargs: object) -> object:
             with app.app_context():

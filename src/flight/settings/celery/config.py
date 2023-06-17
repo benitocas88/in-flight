@@ -22,3 +22,5 @@ class CeleryConfig(SQSBroker, S3Backend):
     task_acks_late = True
     task_track_started = True
     task_create_missing_queues = False
+
+    broker_connection_retry_on_startup = True

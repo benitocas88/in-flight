@@ -21,6 +21,7 @@ services:
     << : *default-service
     depends_on:
       - flistack
+      - flidog
     command: >
       bash -c "watchmedo auto-restart --pattern='*.py' --directory='/home/in-flight/app/' --recursive --
       celery -A app.celery worker --loglevel=INFO -E -Ofair --pidfile /tmp/celery.pid"
@@ -30,10 +31,9 @@ services:
       - ./src:/home/in-flight/app:rw
     deploy: *default-deploy
     labels:
-      com.datadoghq.ad.logs: "[celery-flight]"
-      com.datadoghq.tags.service: "in-flight"
-      com.datadoghq.tags.version: "1.0.0"
+      com.datadoghq.ad.logs: '[{"source": "in-flight", "service": "in-flight"}]'
       com.datadoghq.tags.env: "dev"
+      com.datadoghq.tags.version: "1.0.0"
 
   flipys:
     << : *default-service
@@ -64,22 +64,15 @@ services:
     deploy: *default-deploy
 
   flidog:
-    image: datadog/agent:latest
+    image: gcr.io/datadoghq/agent:7
     environment:
       - DD_API_KEY=<>
-      # - DD_LOGS_ENABLED=true
-      # - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
-      # - DD_CONTAINER_EXCLUDE_LOGS="name:datadog-agent"
-      # - DD_SITE="us5.datadoghq.com"
+      - DD_LOGS_ENABLED=true
+      - DD_SITE=datadoghq.com
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /proc/:/host/proc/:ro
-      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
-      # - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
-    # networks:
-      # - ping-net
-    links:
-      - flight
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/proc/:/host/proc/:ro"
+      - "/sys/fs/cgroup/:/host/sys/fs/cgroup:ro"
 
 networks:
   ping-net: {}

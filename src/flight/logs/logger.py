@@ -2,7 +2,7 @@ from logging.config import dictConfig
 from typing import Any
 
 import structlog
-from flight.logs.processors import add_event_details, add_app_active_scope
+from flight.logs.processors import add_event_details, add_app_active_scope, add_tracing_details
 from flight.utils.environments import Environment
 
 
@@ -19,6 +19,7 @@ def make_structlog(logfile: Any) -> None:
     ]
 
     post_chain = [
+        add_tracing_details,
         add_event_details,
         add_app_active_scope,
     ]

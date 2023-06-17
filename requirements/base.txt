@@ -6,20 +6,29 @@
 #
 amqp==5.1.1
     # via kombu
+attrs==23.1.0
+    # via
+    #   cattrs
+    #   ddtrace
+    #   jsonschema
 billiard==4.1.0
     # via celery
 blinker==1.6.2
     # via flask
-boto3==1.26.154
+boto3==1.26.155
     # via
     #   -r base.in
     #   celery
     #   kombu
-botocore==1.29.154
+botocore==1.29.155
     # via
     #   -r base.in
     #   boto3
     #   s3transfer
+bytecode==0.14.2
+    # via ddtrace
+cattrs==23.1.2
+    # via ddtrace
 celery[s3,sqs]==5.3.0
     # via -r base.in
 certifi==2023.5.7
@@ -39,12 +48,22 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.3.0
     # via celery
+ddsketch==2.0.4
+    # via ddtrace
+ddtrace==1.15.0
+    # via -r base.in
+deprecated==1.2.14
+    # via opentelemetry-api
+envier==0.4.0
+    # via ddtrace
 environs==9.5.0
     # via -r base.in
 flask==2.3.2
     # via -r base.in
 idna==3.4
     # via requests
+importlib-metadata==6.0.1
+    # via opentelemetry-api
 itsdangerous==2.1.2
     # via flask
 jinja2==3.1.2
@@ -53,6 +72,8 @@ jmespath==1.0.1
     # via
     #   boto3
     #   botocore
+jsonschema==4.17.3
+    # via ddtrace
 kombu[sqs]==5.3.1
     # via celery
 markupsafe==2.1.3
@@ -63,14 +84,22 @@ marshmallow==3.19.0
     # via
     #   -r base.in
     #   environs
+opentelemetry-api==1.18.0
+    # via ddtrace
 packaging==23.1
     # via marshmallow
 prompt-toolkit==3.0.38
     # via click-repl
+protobuf==4.23.3
+    # via
+    #   ddsketch
+    #   ddtrace
 pycurl==7.45.2
     # via
     #   -r base.in
     #   kombu
+pyrsistent==0.19.3
+    # via jsonschema
 python-dateutil==2.8.2
     # via
     #   botocore
@@ -82,9 +111,14 @@ requests==2.31.0
 s3transfer==0.6.1
     # via boto3
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   ddsketch
+    #   ddtrace
+    #   python-dateutil
 structlog==23.1.0
     # via -r base.in
+typing-extensions==4.6.3
+    # via ddtrace
 tzdata==2023.3
     # via celery
 urllib3==1.26.16
@@ -101,3 +135,12 @@ wcwidth==0.2.6
     # via prompt-toolkit
 werkzeug==2.3.6
     # via flask
+wrapt==1.15.0
+    # via deprecated
+xmltodict==0.13.0
+    # via ddtrace
+zipp==3.15.0
+    # via importlib-metadata
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools

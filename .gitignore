@@ -294,6 +294,4 @@ poetry.toml
 .history
 .ionide
 
-.env.production
-
 # End of https://www.toptal.com/developers/gitignore/api/linux,python,localstack,pycharm+all,visualstudiocode
