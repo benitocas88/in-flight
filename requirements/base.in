@@ -1,0 +1,9 @@
+boto3
+botocore
+celery[s3,sqs]
+environs
+flask
+marshmallow
+requests
+structlog
+pycurl

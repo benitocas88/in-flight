@@ -1,0 +1,87 @@
+version: "3.9"
+
+x-deploy: &default-deploy
+  resources:
+    limits:
+      cpus: "1"
+      memory: "2048MB"
+
+x-service: &default-service
+  image: in/flight:latest
+  build:
+    context: .
+    dockerfile: ./devops/Dockerfile
+    args:
+      - REQUIREMENTS=all
+  env_file:
+    - .env.local
+
+services:
+  flight:
+    << : *default-service
+    depends_on:
+      - flistack
+    command: >
+      bash -c "watchmedo auto-restart --pattern='*.py' --directory='/home/in-flight/app/' --recursive --
+      celery -A app.celery worker --loglevel=INFO -E -Ofair --pidfile /tmp/celery.pid"
+    networks:
+      - ping-net
+    volumes:
+      - ./src:/home/in-flight/app:rw
+    deploy: *default-deploy
+    labels:
+      com.datadoghq.ad.logs: "[celery-flight]"
+      com.datadoghq.tags.service: "in-flight"
+      com.datadoghq.tags.version: "1.0.0"
+      com.datadoghq.tags.env: "dev"
+
+  flipys:
+    << : *default-service
+    volumes:
+      - ./src:/home/in-flight/app:rw
+      - ./requirements:/opt/requirements:rw
+      - ./scripts:/opt/scripts:ro
+      - ./pyproject.toml:/home/in-flight/pyproject.toml:ro
+      - ./mypy.ini:/home/in-flight/mypy.ini:ro
+    environment:
+      - ENV_FILENAME=test.py
+    profiles:
+      - tests
+
+  flistack:
+    image: localstack/localstack:2.1.0-amd64
+    environment:
+      - SERVICES=sqs,s3
+      - GATEWAY_LISTEN=0.0.0.0:4567
+      - EAGER_SERVICE_LOADING=1
+    volumes:
+      - "./.aws:/etc/localstack/init/ready.d"
+      - "./.localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - ping-net
+      - service-grp-net
+    deploy: *default-deploy
+
+  flidog:
+    image: datadog/agent:latest
+    environment:
+      - DD_API_KEY=<>
+      # - DD_LOGS_ENABLED=true
+      # - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
+      # - DD_CONTAINER_EXCLUDE_LOGS="name:datadog-agent"
+      # - DD_SITE="us5.datadoghq.com"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      # - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
+    # networks:
+      # - ping-net
+    links:
+      - flight
+
+networks:
+  ping-net: {}
+  service-grp-net:
+    external: true

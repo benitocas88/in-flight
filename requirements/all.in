@@ -1,0 +1,12 @@
+-c base.txt
+
+watchdog[watchmedo]
+celery[pytest]
+pycln
+black
+isort
+mypy
+pytest
+types-requests
+pytest-xdist
+pytest-sugar
