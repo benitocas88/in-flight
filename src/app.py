@@ -42,20 +42,23 @@ def on_task_prerun(task: Task, *_: Tuple, **kwargs: Dict) -> None:
 
 
 @signals.after_setup_logger.connect
-def on_celery_setup_logging(logfile: Any, *_: Tuple, **__: Dict) -> None:
-    make_structlog(logfile)
-
+def on_after_setup_logger(*_: Tuple, **__: Dict) -> None:
+    make_structlog()
 
 
 @app.cli.command("test")
 def test():
-    celery.send_task(
-        "orders.notify_payment_status",
-        kwargs={
-            "meta": {},
-            "webhook": {
-                "receiver": {},
-                "body": {}
+    import time
+    while True:
+        print("message sent...")
+        celery.send_task(
+            "orders.notify_payment_status",
+            kwargs={
+                "meta": {},
+                "webhook": {
+                    "receiver": {},
+                    "body": {}
+                }
             }
-        }
-    )
+        )
+        time.sleep(7)

@@ -8,3 +8,5 @@ requests
 structlog
 pycurl
 ddtrace
+python-json-logger
+logging-json
