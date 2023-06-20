@@ -12,6 +12,7 @@ class CeleryConfig(SQSBroker, S3Backend):
     result_serializer = "json"
     accept_content = ["json"]
     worker_concurrency = 8
+    worker_max_tasks_per_child = 10
     enable_utc = True
 
     task_default_queue = env.str("DEFAULT_QUEUE", default="in-flight")

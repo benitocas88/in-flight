@@ -1,6 +1,7 @@
 import os
 from typing import Any, Dict, Tuple
 
+import structlog
 from celery import signals
 from celery.app.task import Task
 from flask.app import Flask
