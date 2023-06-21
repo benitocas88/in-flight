@@ -55,9 +55,9 @@ services:
       - GATEWAY_LISTEN=0.0.0.0:4567
       - EAGER_SERVICE_LOADING=1
     volumes:
-      - "./.aws:/etc/localstack/init/ready.d"
-      - "./.localstack:/var/lib/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./.aws:/etc/localstack/init/ready.d:ro"
+      - "./.localstack:/var/lib/localstack:rw"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - ping-net
       - service-grp-net
@@ -65,8 +65,9 @@ services:
 
   flidog:
     image: gcr.io/datadoghq/agent:7
+    env_file:
+      - .env.dd
     environment:
-      - DD_API_KEY=<>
       - DD_LOGS_ENABLED=true
       - DD_SITE=datadoghq.com
     volumes:
