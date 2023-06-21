@@ -5,7 +5,6 @@ from flight.mixins.fields import UUIDHex
 from marshmallow import fields, validate
 from marshmallow.decorators import pre_load
 from marshmallow.schema import Schema
-
 from structlog import get_logger
 
 logger = get_logger(__name__)
@@ -19,7 +18,10 @@ class MetaSchema(Schema):
         if not data.get("request_id"):
             request_id = uuid4().hex
             data["request_id"] = request_id
-            logger.info("request_id_missed", message=f"request_id not provided, automatic generated: {request_id}.")
+            logger.info(
+                "request_id_missed",
+                message=f"request_id not provided, automatic generated: {request_id}.",
+            )
         return data
 
 

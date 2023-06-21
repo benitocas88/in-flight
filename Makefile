@@ -26,7 +26,7 @@ logs:
 
 .PHONY: run-linting
 run-linting:
-	$(COMPOSE_FILE) run --rm pingpys sh /opt/scripts/run-linting.sh $(fix)
+	$(COMPOSE_FILE) run --rm flipys sh /opt/scripts/run-linting.sh $(fix)
 
 .PHONY: run-typer
 run-typer:

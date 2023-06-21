@@ -8,7 +8,7 @@ def add_event_details(_: Tuple, __: Dict, event_dict: Dict) -> Dict:
 
 def add_tracing_details(_: Tuple, __: Dict, event_dict: Dict) -> Dict:
     try:
-        from ddtrace import tracer, config
+        from ddtrace import tracer
 
         context = tracer.get_log_correlation_context()
 

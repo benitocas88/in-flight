@@ -1,4 +1,3 @@
-import logging
 from logging.config import dictConfig
 
 import structlog
@@ -24,14 +23,14 @@ def make_structlog() -> None:
         add_event_details,
     ]
 
-    if not Environment.app_env_production():
+    if Environment.app_env_production():
         processors = pre_chain + post_chain
         processor = structlog.processors.JSONRenderer()
     else:
         processors = pre_chain + [structlog.processors.ExceptionPrettyPrinter()] + post_chain
         processor = structlog.dev.ConsoleRenderer()
 
-    logging.config.dictConfig(
+    dictConfig(
         {
             "version": 1,
             "disable_existing_loggers": True,
@@ -61,7 +60,7 @@ def make_structlog() -> None:
                     "level": "INFO",
                     "propagate": False,
                 },
-            }
+            },
         }
     )
 

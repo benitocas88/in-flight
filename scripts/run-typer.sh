@@ -3,5 +3,5 @@
 set -e
 set -o errexit
 
-cd /home/pingook
+cd /home/in-flight
 mypy app/

@@ -8,7 +8,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 BOLD='\033[1m'
 
-cd /home/pingook
+cd /home/in-flight
 
 if [ "$1" != "" ]
 then
