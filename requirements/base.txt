@@ -15,12 +15,12 @@ billiard==4.1.0
     # via celery
 blinker==1.6.2
     # via flask
-boto3==1.26.157
+boto3==1.26.159
     # via
     #   -r base.in
     #   celery
     #   kombu
-botocore==1.29.157
+botocore==1.29.159
     # via
     #   -r base.in
     #   boto3

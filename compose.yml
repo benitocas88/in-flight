@@ -32,7 +32,7 @@ services:
     deploy: *default-deploy
     labels:
       com.datadoghq.ad.logs: '[{"source": "in-flight", "service": "in-flight"}]'
-      com.datadoghq.tags.env: "dev"
+      com.datadoghq.tags.env: "development"
       com.datadoghq.tags.version: "1.0.0"
 
   flipys:
