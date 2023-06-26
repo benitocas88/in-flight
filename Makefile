@@ -20,6 +20,9 @@ console:
 up: build external-net
 	$(COMPOSE_FILE) up -d --remove-orphans
 
+up-dd:
+	$(COMPOSE_FILE) --profile dd-agent up -d --remove-orphans
+
 .PHONY: logs
 logs:
 	$(COMPOSE_FILE) logs -f

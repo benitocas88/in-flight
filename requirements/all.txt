@@ -78,7 +78,7 @@ prompt-toolkit==3.0.38
     #   click-repl
 pycln==2.1.5
     # via -r all.in
-pytest==7.3.2
+pytest==7.4.0
     # via
     #   -r all.in
     #   pytest-sugar

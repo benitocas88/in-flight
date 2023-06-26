@@ -1,5 +1,6 @@
 import os
 from typing import Dict, Tuple
+from uuid import uuid4
 
 from celery import signals
 from celery.app.task import Task
@@ -33,6 +34,7 @@ def on_task_prerun(task: Task, *_: Tuple, **kwargs: Dict) -> None:
     sqs_meta = kwargs.get("kwargs", {}).get("meta", {})
 
     try:
+        print(f"LOKO: {sqs_meta}")
         meta = MetaSchema().load(sqs_meta)
         binder.update(**meta)
     except ValidationError as exc:
@@ -53,8 +55,31 @@ def test():
 
     while True:
         print("message sent...")
+        request_id = uuid4().hex
         celery.send_task(
             "orders.notify_payment_status",
-            kwargs={"meta": {}, "webhook": {"receiver": {}, "body": {}}},
+            kwargs={
+                "meta": {"request_id": request_id},
+                "webhook": {
+                    "receiver": {
+                        "url": "https://webhook.site/37a01c41-0e16-4dae-b84c-f7cf3659a8c4",
+                        "auth": {
+                            "key": "Bearer",
+                            "value": (
+                                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+                                "eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ."
+                                "SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                            ),
+                        },
+                    },
+                    "body": {
+                        "data": {
+                            "order_id": "A-2023/01",
+                            "payment": {"authorization_code": None, "status": "rejected"},
+                            "created_at": 1687737170,
+                        },
+                    },
+                },
+            },
         )
         time.sleep(7)

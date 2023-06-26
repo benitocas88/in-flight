@@ -1,5 +1,6 @@
 from flight.mixins.schemas import BodySchema, WebhookSchema
-from marshmallow import fields, validate
+from marshmallow import Schema, fields
+from marshmallow.validate import ContainsOnly, Range
 
 PAYMENT_STATUS_ALLOWED = [
     "rejected",
@@ -8,15 +9,19 @@ PAYMENT_STATUS_ALLOWED = [
 ]
 
 
+class PaymentSchema(Schema):
+    authorization_code = fields.String(required=True, allow_none=True)
+    status = fields.String(required=True, validate=ContainsOnly(PAYMENT_STATUS_ALLOWED))
+
+
 class StatusSchema(BodySchema):
     order_id = fields.String(required=True, allow_none=False)
-    status = fields.String(
+    payment = fields.Nested(PaymentSchema(), required=True)
+    created_at = fields.TimeDelta(
+        precision="seconds",
         required=True,
-        validate=validate.ContainsOnly(PAYMENT_STATUS_ALLOWED),
-        allow_none=False,
-    )
-    created_at_timestamp = fields.TimeDelta(
-        precision="seconds", required=True, allow_none=True, validate=[validate.Range(min=60)]
+        allow_none=True,
+        validate=[Range(min=60)],
     )
 
 
