@@ -15,13 +15,11 @@ class MetaSchema(Schema):
 
     @pre_load
     def make_request_id(self, data: Dict, **_: Dict) -> Dict:
-        print("received", data)
         if data.get("request_id"):
             return data
+
         request_id = uuid4().hex
         data.update(request_id=request_id)
-        logger.warning("request_id", message=f"request_id not found. Creating one: {request_id}.")
-        print(data)
         return data
 
 

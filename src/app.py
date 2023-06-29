@@ -34,7 +34,6 @@ def on_task_prerun(task: Task, *_: Tuple, **kwargs: Dict) -> None:
     sqs_meta = kwargs.get("kwargs", {}).get("meta", {})
 
     try:
-        print(f"LOKO: {sqs_meta}")
         meta = MetaSchema().load(sqs_meta)
         binder.update(**meta)
     except ValidationError as exc:
@@ -50,11 +49,10 @@ def on_after_setup_logger(*_: Tuple, **__: Dict) -> None:
 
 
 @app.cli.command("test")
-def test():
+def test() -> None:
     import time
 
     while True:
-        print("message sent...")
         request_id = uuid4().hex
         celery.send_task(
             "orders.notify_payment_status",
@@ -82,4 +80,5 @@ def test():
                 },
             },
         )
+        print("message sent...")
         time.sleep(7)
