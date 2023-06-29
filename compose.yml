@@ -28,7 +28,7 @@ services:
     networks:
       - ping-net
     volumes:
-      - ./src:/home/in-flight/app:rw
+      - "./src:/home/in-flight/app:rw"
     deploy: *default-deploy
     labels:
       com.datadoghq.ad.logs: '[{"source": "in-flight", "service": "in-flight"}]'
@@ -38,11 +38,11 @@ services:
   flipys:
     << : *default-service
     volumes:
-      - ./src:/home/in-flight/app:rw
-      - ./requirements:/opt/requirements:rw
-      - ./scripts:/opt/scripts:ro
-      - ./pyproject.toml:/home/in-flight/pyproject.toml:ro
-      - ./mypy.ini:/home/in-flight/mypy.ini:ro
+      - "./src:/home/in-flight/app:rw"
+      - "./requirements:/opt/requirements:rw"
+      - "./scripts:/opt/scripts:ro"
+      - "./pyproject.toml:/home/in-flight/pyproject.toml:ro"
+      - "./mypy.ini:/home/in-flight/mypy.ini:ro"
     environment:
       - ENV_FILENAME=test.py
     profiles:

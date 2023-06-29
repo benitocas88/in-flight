@@ -15,12 +15,12 @@ billiard==4.1.0
     # via celery
 blinker==1.6.2
     # via flask
-boto3==1.26.160
+boto3==1.26.163
     # via
     #   -r base.in
     #   celery
     #   kombu
-botocore==1.29.160
+botocore==1.29.163
     # via
     #   -r base.in
     #   boto3
@@ -50,7 +50,7 @@ click-repl==0.3.0
     # via celery
 ddsketch==2.0.4
     # via ddtrace
-ddtrace==1.15.0
+ddtrace==1.15.1
     # via -r base.in
 deprecated==1.2.14
     # via opentelemetry-api
@@ -122,7 +122,7 @@ six==1.16.0
     #   python-dateutil
 structlog==23.1.0
     # via -r base.in
-typing-extensions==4.6.3
+typing-extensions==4.7.0
     # via ddtrace
 tzdata==2023.3
     # via celery

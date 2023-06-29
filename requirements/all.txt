@@ -51,7 +51,7 @@ kombu==5.3.1
     #   celery
 libcst==0.4.10
     # via pycln
-mypy==1.4.0
+mypy==1.4.1
     # via -r all.in
 mypy-extensions==1.0.0
     # via
@@ -112,7 +112,7 @@ types-requests==2.31.0.1
     # via -r all.in
 types-urllib3==1.26.25.13
     # via types-requests
-typing-extensions==4.6.3
+typing-extensions==4.7.0
     # via
     #   -c base.txt
     #   libcst

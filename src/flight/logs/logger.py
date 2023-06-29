@@ -30,6 +30,8 @@ def make_structlog() -> None:
         processors = pre_chain + [structlog.processors.ExceptionPrettyPrinter()] + post_chain
         processor = structlog.dev.ConsoleRenderer()
 
+    processors.append(processor)
+
     dictConfig(
         {
             "version": 1,
@@ -65,7 +67,7 @@ def make_structlog() -> None:
     )
 
     structlog.configure_once(
-        processors=processors + [processor, structlog.stdlib.ProcessorFormatter.wrap_for_formatter],
+        processors=processors + [structlog.stdlib.ProcessorFormatter.wrap_for_formatter],
         context_class=structlog.threadlocal.wrap_dict(dict),
         logger_factory=structlog.stdlib.LoggerFactory(),
         wrapper_class=structlog.stdlib.BoundLogger,  # type: ignore
