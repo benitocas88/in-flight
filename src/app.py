@@ -60,7 +60,7 @@ def test() -> None:
                 "meta": {"request_id": request_id},
                 "webhook": {
                     "receiver": {
-                        "url": "https://webhook.site/37a01c41-0e16-4dae-b84c-f7cf3659a8c4",
+                        "url": "https://webhook.site/92a71e0f-b81b-4f62-b8ab-2822c350759d",
                         "auth": {
                             "key": "Bearer",
                             "value": (

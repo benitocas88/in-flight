@@ -49,7 +49,7 @@ services:
       - tests
 
   flistack:
-    image: localstack/localstack:2.1.0-amd64
+    image: localstack/localstack:2.3.1-amd64
     environment:
       - SERVICES=sqs,s3
       - GATEWAY_LISTEN=0.0.0.0:4567
@@ -64,7 +64,7 @@ services:
     deploy: *default-deploy
 
   flidog:
-    image: gcr.io/datadoghq/agent:7
+    image: datadog/agent:7.48.0-rc.9-jmx
     env_file:
       - .env.dd
     environment:

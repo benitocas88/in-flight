@@ -12,7 +12,7 @@ cd /opt/requirements
 
 reqs="base all production"
 for req in ${reqs};do
-  bashy="${cmd} ${req}.in --resolver=backtracking --output-file=${req}.txt"
+  bashy="${cmd} ${req}.in --resolver=backtracking --no-strip-extras --output-file=${req}.txt"
   echo "${cyan}Running command: ${bashy}"
   bash -c "${bashy}"
 done
