@@ -12,14 +12,14 @@ attrs==23.1.0
     #   ddtrace
 billiard==4.1.0
     # via celery
-blinker==1.6.2
+blinker==1.6.3
     # via flask
-boto3==1.28.57
+boto3==1.28.63
     # via
     #   -r base.in
     #   celery
     #   kombu
-botocore==1.31.57
+botocore==1.31.63
     # via
     #   -r base.in
     #   boto3
@@ -49,7 +49,7 @@ click-repl==0.3.0
     # via celery
 ddsketch==2.0.4
     # via ddtrace
-ddtrace==1.20.2
+ddtrace==2.0.2
     # via -r base.in
 deprecated==1.2.14
     # via opentelemetry-api
@@ -85,14 +85,16 @@ marshmallow==3.20.1
     #   environs
 opentelemetry-api==1.20.0
     # via ddtrace
-packaging==23.1
+packaging==23.2
     # via marshmallow
 prompt-toolkit==3.0.39
     # via click-repl
-protobuf==4.24.3
+protobuf==4.24.4
     # via
     #   ddsketch
     #   ddtrace
+psutil==5.9.5
+    # via ddtrace
 pycurl==7.45.2
     # via
     #   -r base.in
@@ -115,13 +117,13 @@ six==1.16.0
     #   ddsketch
     #   ddtrace
     #   python-dateutil
-structlog==23.1.0
+structlog==23.2.0
     # via -r base.in
 typing-extensions==4.8.0
     # via ddtrace
 tzdata==2023.3
     # via celery
-urllib3==1.26.16
+urllib3==2.0.6
     # via
     #   botocore
     #   celery
@@ -137,7 +139,9 @@ wcwidth==0.2.8
 werkzeug==3.0.0
     # via flask
 wrapt==1.15.0
-    # via deprecated
+    # via
+    #   ddtrace
+    #   deprecated
 xmltodict==0.13.0
     # via ddtrace
 zipp==3.17.0

@@ -1,4 +1,4 @@
-FROM python:3.11.5-slim as base
+FROM --platform=linux/amd64 python:3.12.0-slim as base
 
 LABEL maintainer="beni522@gmail.com"
 

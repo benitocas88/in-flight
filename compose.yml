@@ -21,7 +21,6 @@ services:
     << : *default-service
     depends_on:
       - flistack
-      - flidog
     command: >
       bash -c "watchmedo auto-restart --pattern='*.py' --directory='/home/in-flight/app/' --recursive --
       celery -A app.celery worker --loglevel=INFO -E -Ofair --pidfile /tmp/celery.pid"
@@ -49,7 +48,7 @@ services:
       - tests
 
   flistack:
-    image: localstack/localstack:2.3.1-amd64
+    image: localstack/localstack:2.3.2-amd64
     environment:
       - SERVICES=sqs,s3
       - GATEWAY_LISTEN=0.0.0.0:4567
