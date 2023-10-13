@@ -10,7 +10,6 @@ x-service: &default-service
   image: in/flight:latest
   build:
     context: .
-    dockerfile: ./devops/Dockerfile
     args:
       - REQUIREMENTS=all
   env_file:
