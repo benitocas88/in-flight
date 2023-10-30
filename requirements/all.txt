@@ -12,7 +12,7 @@ billiard==4.1.0
     # via
     #   -c base.txt
     #   celery
-black==23.9.1
+black==23.10.1
     # via -r all.in
 celery[pytest]==5.3.4
     # via
@@ -52,7 +52,7 @@ kombu==5.3.2
     #   celery
 libcst==1.1.0
     # via pycln
-mypy==1.6.0
+mypy==1.6.1
     # via -r all.in
 mypy-extensions==1.0.0
     # via
@@ -77,9 +77,9 @@ prompt-toolkit==3.0.39
     # via
     #   -c base.txt
     #   click-repl
-pycln==2.2.2
+pycln==2.3.0
     # via -r all.in
-pytest==7.4.2
+pytest==7.4.3
     # via
     #   -r all.in
     #   pytest-sugar
@@ -109,7 +109,7 @@ tomlkit==0.12.1
     # via pycln
 typer==0.9.0
     # via pycln
-types-requests==2.31.0.8
+types-requests==2.31.0.10
     # via -r all.in
 typing-extensions==4.8.0
     # via
@@ -124,7 +124,7 @@ tzdata==2023.3
     # via
     #   -c base.txt
     #   celery
-urllib3==2.0.6
+urllib3==2.0.7
     # via
     #   -c base.txt
     #   types-requests

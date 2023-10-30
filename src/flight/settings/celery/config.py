@@ -1,18 +1,18 @@
 from flight.settings.base import env
 from flight.settings.celery.backends.s3 import S3Backend
-from flight.settings.celery.brokers.sqs import SQSMeta
+from flight.settings.celery.brokers.sqs import SQS
 from kombu.entity import Queue
 
 
-class CeleryConfig(SQSMeta, S3Backend):
+class CeleryConfig(SQS, S3Backend):
     broker_url = env.str("BROKER_URL")
 
     timezone = "UTC"
     task_serializer = "json"
     result_serializer = "json"
     accept_content = ["json"]
-    worker_concurrency = 8
-    worker_max_tasks_per_child = 10
+    worker_concurrency = 4
+    worker_max_tasks_per_child = 6
     enable_utc = True
 
     task_default_queue = env.str("DEFAULT_QUEUE_NAME", default="in-flight")
