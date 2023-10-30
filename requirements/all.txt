@@ -136,7 +136,7 @@ vine==5.0.0
     #   kombu
 watchdog[watchmedo]==3.0.0
     # via -r all.in
-wcwidth==0.2.8
+wcwidth==0.2.9
     # via
     #   -c base.txt
     #   prompt-toolkit
