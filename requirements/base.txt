@@ -59,7 +59,7 @@ environs==9.5.0
     # via -r base.in
 flask==3.0.0
     # via -r base.in
-idna==3.4
+idna==3.7
     # via requests
 importlib-metadata==6.8.0
     # via opentelemetry-api
