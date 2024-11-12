@@ -108,7 +108,7 @@ python-dotenv==1.0.0
     # via environs
 python-json-logger==2.0.7
     # via -r base.in
-requests==2.31.0
+requests==2.32.2
     # via -r base.in
 s3transfer==0.7.0
     # via boto3
