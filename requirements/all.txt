@@ -12,7 +12,7 @@ billiard==4.1.0
     # via
     #   -c base.txt
     #   celery
-black==23.10.1
+black==24.3.0
     # via -r all.in
 celery[pytest]==5.3.4
     # via
