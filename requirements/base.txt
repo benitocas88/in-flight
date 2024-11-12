@@ -136,7 +136,7 @@ vine==5.0.0
     #   kombu
 wcwidth==0.2.9
     # via prompt-toolkit
-werkzeug==3.0.1
+werkzeug==3.0.6
     # via flask
 wrapt==1.15.0
     # via
