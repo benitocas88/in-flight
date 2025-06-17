@@ -89,7 +89,7 @@ packaging==23.2
     # via marshmallow
 prompt-toolkit==3.0.39
     # via click-repl
-protobuf==4.24.4
+protobuf==4.25.8
     # via
     #   ddsketch
     #   ddtrace
