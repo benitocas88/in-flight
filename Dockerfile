@@ -1,14 +1,14 @@
-FROM python:3.12.1-bookworm AS base
+FROM python:3.15.2-trixie AS base
+COPY --link --from=ghcr.io/astral-sh/uv:0.13.9 /uv /uvx /usr/local/bin/
 
 LABEL maintainer="beni522@gmail.com"
 
 ARG REQUIREMENTS=production
 
-ENV PATH="/home/in-flight/.local/bin:${PATH}" \
-    PYTHONPATH="/home/in-flight/app" \
-    PYTHONDONTWRITEBYTECODE=1 \
+ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYCURL_SSL_LIBRARY=openssl
+    PYCURL_SSL_LIBRARY=openssl \
+    UV_COMPILE_BYTECODE=1
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
@@ -19,14 +19,14 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --shell /bin/bash in-flight
-USER in-flight
 
 WORKDIR /home/in-flight/app
 
 RUN --mount=type=bind,source=requirements,target=/opt/requirements \
-    python -m pip install --no-cache-dir --disable-pip-version-check pip-tools \
-    && pip-sync /opt/requirements/base.txt /opt/requirements/${REQUIREMENTS}.txt \
-        --pip-args="--no-cache-dir --no-deps"
+    uv pip sync --system --no-cache \
+        /opt/requirements/base.txt /opt/requirements/${REQUIREMENTS}.txt
+
+USER in-flight
 
 COPY --chown=in-flight:in-flight ./src .
 

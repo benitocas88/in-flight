@@ -38,10 +38,10 @@ run-tests:
 
 .PHONY: run-deps
 run-deps:
-	$(COMPOSE_FILE) run --rm --no-deps \
+	$(COMPOSE_FILE) run --rm \
 		--user "$(shell id -u):$(shell id -g)" \
 		--env HOME=/home/in-flight \
-		--env PIP_NO_CACHE_DIR=1 \
+		--env UV_NO_CACHE=1 \
 		--volume "$(CURDIR)/scripts:/opt/scripts:ro" \
 		--volume "$(CURDIR)/requirements:/opt/requirements:rw" \
 		--workdir /opt/requirements \

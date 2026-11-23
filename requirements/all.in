@@ -1,8 +1,9 @@
 -c base.txt
+-r base.txt
 
-pip-tools
+libcst>=1.9.0
 watchdog[watchmedo]
-celery[pytest]
+pytest-celery
 pycln
 black
 isort
