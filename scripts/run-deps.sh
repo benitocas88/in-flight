@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 
-set -e -o errexit
+set -euo pipefail
 
-cyan='\033[0;36m'
-cmd="pip-compile -q"
+cd "$(dirname "${BASH_SOURCE[0]}")/../requirements"
 
-if [ -n "$*" ];then for arg in "$@";do args="${args} ${arg}";done;fi;
-if [ -n "$args" ];then cmd="${cmd} ${args}";fi;
-
-cd /opt/requirements
-
-reqs="base all production"
-for req in ${reqs};do
-  bashy="${cmd} ${req}.in --resolver=backtracking --no-strip-extras --output-file=${req}.txt"
-  echo "${cyan}Running command: ${bashy}"
-  bash -c "${bashy}"
+for requirement in base all production; do
+    printf 'Compiling %s.in -> %s.txt\n' "$requirement" "$requirement"
+    pip-compile -q "$@" "${requirement}.in" \
+        --resolver=backtracking \
+        --no-strip-extras \
+        --output-file="${requirement}.txt"
 done

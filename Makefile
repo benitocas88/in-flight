@@ -38,7 +38,14 @@ run-tests:
 
 .PHONY: run-deps
 run-deps:
-	$(COMPOSE_FILE) run --rm -it flipys sh /opt/scripts/run-deps.sh $(args)
+	$(COMPOSE_FILE) run --rm --no-deps \
+		--user "$(shell id -u):$(shell id -g)" \
+		--env HOME=/home/in-flight \
+		--env PIP_NO_CACHE_DIR=1 \
+		--volume "$(CURDIR)/scripts:/opt/scripts:ro" \
+		--volume "$(CURDIR)/requirements:/opt/requirements:rw" \
+		--workdir /opt/requirements \
+		flight bash /opt/scripts/run-deps.sh $(args)
 
 .PHONY: down
 down:

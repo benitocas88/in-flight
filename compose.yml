@@ -23,7 +23,7 @@ services:
         condition: service_completed_successfully
     command: >
       bash -c "watchmedo auto-restart --pattern='*.py' --directory='/home/in-flight/app/' --recursive --
-      celery -A app.celery worker --loglevel=INFO -E -Ofair --pidfile /tmp/celery.pid"
+      celery -A app.celery worker --loglevel=INFO"
     network_mode: "service:aws-emulator"
     volumes:
       - "./src:/home/in-flight/app:rw"
