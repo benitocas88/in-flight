@@ -19,8 +19,6 @@ services:
     depends_on:
       aws-emulator:
         condition: service_started
-      flistack:
-        condition: service_started
       stack-init:
         condition: service_completed_successfully
     command: >
@@ -46,7 +44,6 @@ services:
       AWS_ACCESS_KEY_ID: ""
       AWS_SECRET_ACCESS_KEY: ""
       AWS_SESSION_TOKEN: ""
-      AWS_S3_ENDPOINT_URL: "http://flistack:4566"
 
   aws-emulator:
     build:
@@ -54,8 +51,6 @@ services:
       dockerfile: Dockerfile.aws-emulator
     volumes:
       - "aws-emulator-state:/home/emulator/.aws/emulator"
-    networks:
-      - ping-net
 
   stack-init:
     image: amazon/aws-cli:2.35.0
@@ -76,23 +71,6 @@ services:
       - "aws-emulator-state:/aws-emulator:ro"
       - "./.aws/create-stack.sh:/opt/create-stack.sh:ro"
     restart: "no"
-
-  flistack:
-    image: localstack/localstack:2.3.2-amd64
-    environment:
-      - SERVICES=s3
-    volumes:
-      - "./.localstack:/var/lib/localstack:rw"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    networks:
-      - ping-net
-      - service-grp-net
-    deploy: *default-deploy
-
-networks:
-  ping-net: {}
-  service-grp-net:
-    external: true
 
 volumes:
   aws-emulator-state:

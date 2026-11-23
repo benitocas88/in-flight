@@ -4,7 +4,7 @@
 
 This is a Flask and Celery learning project that we are improving incrementally.
 Python source is under `src/`, tests are under `tests/`, and Celery is configured
-to use SQS and S3. Local development uses LocalStack.
+to use SQS as its message broker.
 
 ## Working rules
 

@@ -13,10 +13,6 @@ class BaseTaskWithRetry(Task):  # noqa
         HTTPError,
         Timeout,
     )
-    max_retries = 3
-    retry_jitter = True
-    retry_backoff = 5
-    retry_backoff_max = 300
 
 
 P = ParamSpec("P")
