@@ -1,4 +1,34 @@
-from environs import Env
+from os import environ
+from typing import TypeVar
+
+from pydantic import TypeAdapter
+
+Value = TypeVar("Value")
+_MISSING = object()
+_STR_ADAPTER = TypeAdapter(str)
+_INT_ADAPTER = TypeAdapter(int)
+_BOOL_ADAPTER = TypeAdapter(bool)
+
+
+def _read(name: str, adapter: TypeAdapter[Value], default: Value | object) -> Value:
+    value = environ.get(name)
+    if value is None:
+        if default is _MISSING:
+            raise ValueError(f'Environment variable "{name}" not set')
+        return default
+    return adapter.validate_python(value)
+
+
+class Env:
+    def str(self, name: str, default: str | object = _MISSING) -> str:
+        return _read(name, _STR_ADAPTER, default)
+
+    def int(self, name: str, default: int | object = _MISSING) -> int:
+        return _read(name, _INT_ADAPTER, default)
+
+    def bool(self, name: str, default: bool | object = _MISSING) -> bool:
+        return _read(name, _BOOL_ADAPTER, default)
+
 
 env = Env()
 

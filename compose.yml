@@ -9,7 +9,7 @@ x-service: &default-service
   build:
     context: .
     args:
-      - REQUIREMENTS=all
+      - INSTALL_DEV_DEPENDENCIES=1
   env_file:
     - .env.local
 

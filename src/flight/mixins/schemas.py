@@ -1,26 +1,22 @@
-from typing import Dict
 from uuid import uuid4
 
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
 from flight.mixins.fields import UUIDHex
-from marshmallow import fields
-from marshmallow.decorators import pre_load
-from marshmallow.schema import Schema
 
 
-class BodySchema(Schema):
-    class Meta:
-        ordered = True
+class BodySchema(BaseModel):
+    model_config = ConfigDict(extra="forbid", ser_json_timedelta="float")
 
 
-class WebhookSchema(Schema):
-    webhook_id = UUIDHex(required=True)
-    request_id = UUIDHex(required=True)
-    data = fields.Dict(required=True)
+class WebhookSchema(BodySchema):
+    webhook_id: str = Field(default_factory=lambda: uuid4().hex)
+    request_id: UUIDHex
+    data: dict
 
-    class Meta:
-        ordered = True
-
-    @pre_load
-    def make_webhook_id(self, data: Dict, **_: Dict) -> Dict:
-        data["webhook_id"] = uuid4().hex
-        return data
+    @model_validator(mode="before")
+    @classmethod
+    def generate_webhook_id(cls, values):
+        if isinstance(values, dict):
+            return {**values, "webhook_id": uuid4().hex}
+        return values

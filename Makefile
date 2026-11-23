@@ -26,7 +26,14 @@ logs:
 
 .PHONY: run-linting
 run-linting:
-	$(COMPOSE_FILE) run --rm flipys sh /opt/scripts/run-linting.sh $(fix)
+	docker run --rm \
+		--user "$(shell id -u):$(shell id -g)" \
+		--env HOME=/tmp \
+		--volume "$(CURDIR)/src:/home/in-flight/app:rw" \
+		--volume "$(CURDIR)/scripts:/opt/scripts:ro" \
+		--volume "$(CURDIR)/pyproject.toml:/opt/project/pyproject.toml:ro" \
+		--workdir /home/in-flight \
+		in/flight:latest bash /opt/scripts/run-linting.sh $(fix)
 
 .PHONY: run-typer
 run-typer:
@@ -38,14 +45,14 @@ run-tests:
 
 .PHONY: run-deps
 run-deps:
-	$(COMPOSE_FILE) run --rm --no-deps \
+	docker run --rm \
 		--user "$(shell id -u):$(shell id -g)" \
-		--env HOME=/home/in-flight \
-		--env PIP_NO_CACHE_DIR=1 \
+		--env HOME=/tmp \
 		--volume "$(CURDIR)/scripts:/opt/scripts:ro" \
-		--volume "$(CURDIR)/requirements:/opt/requirements:rw" \
-		--workdir /opt/requirements \
-		flight bash /opt/scripts/run-deps.sh $(args)
+		--volume "$(CURDIR)/pyproject.toml:/opt/project/pyproject.toml:ro" \
+		--volume "$(CURDIR)/uv.lock:/opt/project/uv.lock:rw" \
+		--workdir /opt/project \
+		in/flight:latest bash /opt/scripts/run-deps.sh $(args)
 
 .PHONY: down
 down:
