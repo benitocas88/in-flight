@@ -6,10 +6,6 @@
 #
 amqp==5.1.1
     # via kombu
-attrs==23.1.0
-    # via
-    #   cattrs
-    #   ddtrace
 billiard==4.1.0
     # via celery
 blinker==1.6.3
@@ -24,11 +20,7 @@ botocore==1.31.74
     #   -r base.in
     #   boto3
     #   s3transfer
-bytecode==0.15.1
-    # via ddtrace
-cattrs==23.1.2
-    # via ddtrace
-celery[s3,sqs]==5.3.4
+celery[sqs]==5.3.4
     # via -r base.in
 certifi==2023.7.22
     # via requests
@@ -47,22 +39,12 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.3.0
     # via celery
-ddsketch==2.0.4
-    # via ddtrace
-ddtrace==2.1.4
-    # via -r base.in
-deprecated==1.2.14
-    # via opentelemetry-api
-envier==0.4.0
-    # via ddtrace
 environs==9.5.0
     # via -r base.in
 flask==3.0.0
     # via -r base.in
 idna==3.7
     # via requests
-importlib-metadata==6.8.0
-    # via opentelemetry-api
 itsdangerous==2.1.2
     # via flask
 jinja2==3.1.5
@@ -83,18 +65,10 @@ marshmallow==3.20.1
     # via
     #   -r base.in
     #   environs
-opentelemetry-api==1.20.0
-    # via ddtrace
 packaging==23.2
     # via marshmallow
 prompt-toolkit==3.0.39
     # via click-repl
-protobuf==4.24.4
-    # via
-    #   ddsketch
-    #   ddtrace
-psutil==5.9.6
-    # via ddtrace
 pycurl==7.45.2
     # via
     #   -r base.in
@@ -113,14 +87,9 @@ requests==2.31.0
 s3transfer==0.7.0
     # via boto3
 six==1.16.0
-    # via
-    #   ddsketch
-    #   ddtrace
-    #   python-dateutil
+    # via python-dateutil
 structlog==23.2.0
     # via -r base.in
-typing-extensions==4.8.0
-    # via ddtrace
 tzdata==2023.3
     # via celery
 urllib3==2.0.7
@@ -138,14 +107,6 @@ wcwidth==0.2.9
     # via prompt-toolkit
 werkzeug==3.0.6
     # via flask
-wrapt==1.15.0
-    # via
-    #   ddtrace
-    #   deprecated
-xmltodict==0.13.0
-    # via ddtrace
-zipp==3.19.1
-    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

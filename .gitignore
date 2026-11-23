@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/linux,python,localstack,pycharm+all,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=linux,python,localstack,pycharm+all,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/linux,python,pycharm+all,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=linux,python,pycharm+all,visualstudiocode
 
 ### Linux ###
 *~
@@ -15,10 +15,6 @@
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
-
-### LocalStack ###
-# https://github.com/localstack/localstack
-**/.localstack
 
 ### PyCharm+all ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -294,4 +290,4 @@ poetry.toml
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/linux,python,localstack,pycharm+all,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/linux,python,pycharm+all,visualstudiocode

@@ -8,7 +8,7 @@ from flask.app import Flask
 from flight.logs.logger import make_structlog
 from flight.mixins.metas import MetaSchema
 from flight.settings.base import env
-from flight.settings.celery.app import make_celery
+from flight.celery.app import make_celery
 from marshmallow.exceptions import ValidationError
 from structlog import get_logger
 from structlog.contextvars import bind_contextvars, clear_contextvars

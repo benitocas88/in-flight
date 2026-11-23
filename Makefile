@@ -17,11 +17,8 @@ console:
 	$(COMPOSE_FILE) exec flight bash
 
 .PHONY: up
-up: build external-net
+up: build
 	$(COMPOSE_FILE) up -d --remove-orphans
-
-up-dd:
-	$(COMPOSE_FILE) --profile dd-agent up -d --remove-orphans
 
 .PHONY: logs
 logs:
@@ -42,13 +39,6 @@ run-tests:
 .PHONY: run-deps
 run-deps:
 	$(COMPOSE_FILE) run --rm -it flipys sh /opt/scripts/run-deps.sh $(args)
-
-.PHONY: external-net
-external-net: SERVICE_GRP_NET=service-grp-net
-external-net: ## Create common external docker network (if missing).
-	@if [ "$$(docker network ls --filter name=$(SERVICE_GRP_NET) --format '{{ .Name }}')" != $(SERVICE_GRP_NET) ]; then \
-		docker network create $(SERVICE_GRP_NET); \
-	fi
 
 .PHONY: down
 down:
