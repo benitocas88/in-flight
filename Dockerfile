@@ -3,28 +3,26 @@ COPY --link --from=ghcr.io/astral-sh/uv:0.13.9 /uv /uvx /usr/local/bin/
 
 LABEL maintainer="beni522@gmail.com"
 
-ARG REQUIREMENTS=production
+ARG INSTALL_DEV_DEPENDENCIES=0
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYCURL_SSL_LIBRARY=openssl \
-    UV_COMPILE_BYTECODE=1
-
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        gcc \
-        libcurl4-openssl-dev \
-        libssl-dev \
-        libpython3-dev \
-    && rm -rf /var/lib/apt/lists/*
+    UV_COMPILE_BYTECODE=1 \
+    UV_PROJECT_ENVIRONMENT=/opt/venv \
+    PATH="/opt/venv/bin:${PATH}"
 
 RUN useradd --create-home --shell /bin/bash in-flight
 
 WORKDIR /home/in-flight/app
 
-RUN --mount=type=bind,source=requirements,target=/opt/requirements \
-    uv pip sync --system --no-cache \
-        /opt/requirements/base.txt /opt/requirements/${REQUIREMENTS}.txt
+COPY pyproject.toml uv.lock ./
+
+RUN if [ "${INSTALL_DEV_DEPENDENCIES}" = "1" ]; then \
+        uv sync --locked --group dev; \
+    else \
+        uv sync --locked --no-dev; \
+    fi
 
 USER in-flight
 

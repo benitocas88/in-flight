@@ -2,7 +2,7 @@ from functools import wraps
 from typing import Callable, TypeVar, cast
 
 from celery.app.task import Task
-from requests.exceptions import HTTPError, Timeout
+from httpx import HTTPStatusError, TimeoutException
 from typing_extensions import ParamSpec
 
 from app import celery
@@ -10,8 +10,8 @@ from app import celery
 
 class BaseTaskWithRetry(Task):  # noqa
     autoretry_for = (
-        HTTPError,
-        Timeout,
+        HTTPStatusError,
+        TimeoutException,
     )
 
 

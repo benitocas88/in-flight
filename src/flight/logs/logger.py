@@ -1,7 +1,7 @@
 from logging.config import dictConfig
-from typing import Any
 
 import structlog
+
 from flight.logs.processors import add_event_details
 from flight.utils.environments import Environment
 

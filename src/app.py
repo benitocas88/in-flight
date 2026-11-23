@@ -5,11 +5,11 @@ from uuid import uuid4
 from celery import signals
 from celery.app.task import Task
 from flask.app import Flask
+from flight.celery.app import make_celery
 from flight.logs.logger import make_structlog
 from flight.mixins.metas import MetaSchema
 from flight.settings.base import env
-from flight.celery.app import make_celery
-from marshmallow.exceptions import ValidationError
+from pydantic import ValidationError
 from structlog import get_logger
 from structlog.contextvars import bind_contextvars, clear_contextvars
 
@@ -34,10 +34,10 @@ def on_task_prerun(task: Task, *_: Tuple, **kwargs: Dict) -> None:
     sqs_meta = kwargs.get("kwargs", {}).get("meta", {})
 
     try:
-        meta = MetaSchema().load(sqs_meta)
-        binder.update(**meta)
+        meta = MetaSchema.model_validate(sqs_meta)
+        binder.update(**meta.model_dump(mode="json"))
     except ValidationError as exc:
-        logger.warning("meta_validation", message=exc.messages)
+        logger.warning("meta_validation", errors=exc.errors(include_input=False))
 
     clear_contextvars()
     bind_contextvars(**binder)

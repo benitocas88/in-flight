@@ -2,11 +2,10 @@
 
 set -euo pipefail
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../requirements"
+project_dir="$(mktemp -d)"
+cp /opt/project/pyproject.toml /opt/project/uv.lock "$project_dir/"
+cd "$project_dir"
 
-for requirement in base all production; do
-    printf 'Compiling %s.in -> %s.txt\n' "$requirement" "$requirement"
-    uv pip compile -q "$@" "${requirement}.in" \
-        --no-strip-extras \
-        --output-file="${requirement}.txt"
-done
+printf 'Locking project dependencies with uv...\n'
+uv lock "$@"
+cat uv.lock > /opt/project/uv.lock

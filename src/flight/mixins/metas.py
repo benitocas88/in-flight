@@ -1,37 +1,40 @@
-from typing import Dict
 from uuid import uuid4
 
-from flight.mixins.fields import UUIDHex
-from marshmallow import fields, validate
-from marshmallow.decorators import pre_load
-from marshmallow.schema import Schema
+from pydantic import AnyUrl, BaseModel, ConfigDict, Field, field_validator, model_validator
 from structlog import get_logger
+
+from flight.mixins.fields import UUIDHex
 
 logger = get_logger(__name__)
 
 
-class MetaSchema(Schema):
-    request_id = UUIDHex(required=False)
+class MetaSchema(BaseModel):
+    request_id: UUIDHex = Field(default_factory=lambda: uuid4().hex)
 
-    @pre_load
-    def make_request_id(self, data: Dict, **_: Dict) -> Dict:
-        if data.get("request_id"):
-            return data
-
-        request_id = uuid4().hex
-        data.update(request_id=request_id)
-        return data
+    @model_validator(mode="before")
+    @classmethod
+    def generate_request_id(cls, values):
+        if isinstance(values, dict) and not values.get("request_id"):
+            return {**values, "request_id": uuid4().hex}
+        return values
 
 
-class AuthSchema(Schema):
-    key = fields.String(required=True)
-    value = fields.String(required=True)
+class AuthSchema(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    key: str
+    value: str
 
 
-class ReceiverSchema(Schema):
-    url = fields.Url(
-        validate=validate.URL(schemes=["https"], require_tld=True, relative=False),
-        required=True,
-        allow_none=False,
-    )
-    auth = fields.Nested(AuthSchema(), required=False)
+class ReceiverSchema(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    url: AnyUrl
+    auth: AuthSchema | None = None
+
+    @field_validator("url")
+    @classmethod
+    def require_https(cls, value: AnyUrl) -> AnyUrl:
+        if value.scheme != "https":
+            raise ValueError("URL must use HTTPS")
+        return value

@@ -1,46 +1,81 @@
-from unittest.mock import ANY
+from uuid import UUID
 
 import pytest
-from flight.mixins.schemas import BaseWebhookSchema
-from marshmallow.exceptions import ValidationError
+from flight.mixins.metas import MetaSchema, ReceiverSchema
+from flight.mixins.schemas import WebhookSchema
+from flight.orders.schemas import NotifyPaymentStatus
+from pydantic import ValidationError
 
 
-class TestWebhookSchema:
-    @pytest.fixture
-    def webhook_schema(self):
-        return BaseWebhookSchema()
+def test_webhook_schema_generates_id_and_normalizes_request_id():
+    webhook = WebhookSchema.model_validate(
+        {
+            "request_id": "669db10f-70e3-4664-8385-3c270b8f7309",
+            "data": {},
+        }
+    )
 
-    def test_base_webhook_schema(self, webhook_schema, webhook_schema_data):
-        schema_loaded = webhook_schema.load(webhook_schema_data)
-        assert schema_loaded == {
-            "webhook_id": ANY,
-            "webhook_type": "random-webhook_type",
-            "webhook_code": "random-webhook_code",
-            "link_id": "a6ddbef7-3a54-4122-a37d-829b2351fac5",
+    assert webhook.webhook_id == UUID(webhook.webhook_id).hex
+    assert webhook.request_id == "669db10f70e3466483853c270b8f7309"
+
+
+def test_webhook_schema_replaces_supplied_id():
+    webhook = WebhookSchema.model_validate(
+        {
+            "webhook_id": "supplied-id",
             "request_id": "669db10f70e3466483853c270b8f7309",
             "data": {},
         }
-
-    @pytest.mark.parametrize(
-        "test_field_name",
-        [
-            "link_id",
-            "request_id",
-            "data",
-        ],
     )
-    def test_base_webhook_raise_errors_when_missing_data(
-        self, webhook_schema, webhook_schema_data, test_field_name
-    ):
-        webhook_schema_data.pop(test_field_name)
 
-        with pytest.raises(expected_exception=ValidationError) as exc:
-            webhook_schema.load(webhook_schema_data)
+    assert webhook.webhook_id != "supplied-id"
 
-        assert exc.value.messages[test_field_name] == ["Missing data for required field."]
 
-    def test_raise_error_when_unknown_fields_are_there(self):
-        pass
+def test_meta_schema_generates_request_id():
+    meta = MetaSchema.model_validate({})
 
-    def test_create_webhook_id_even_comes_in_payload(self):
-        pass
+    assert meta.request_id == UUID(meta.request_id).hex
+
+
+def test_meta_schema_generates_id_for_empty_value():
+    meta = MetaSchema.model_validate({"request_id": ""})
+
+    assert meta.request_id == UUID(meta.request_id).hex
+
+
+def test_receiver_schema_requires_https():
+    receiver = ReceiverSchema.model_validate({"url": "https://example.com/webhook"})
+
+    assert receiver.url.scheme == "https"
+
+    with pytest.raises(ValidationError):
+        ReceiverSchema.model_validate({"url": "http://example.com/webhook"})
+
+
+def test_notify_payment_status_validates_and_serializes_duration():
+    webhook = NotifyPaymentStatus.model_validate(
+        {
+            "request_id": "669db10f70e3466483853c270b8f7309",
+            "data": {
+                "order_id": "A-2023/01",
+                "payment": {"authorization_code": None, "status": "rejected"},
+                "created_at": 60,
+            },
+        }
+    )
+
+    assert webhook.model_dump(mode="json")["data"]["created_at"] == 60.0
+
+
+def test_notify_payment_status_rejects_invalid_status_and_short_duration():
+    with pytest.raises(ValidationError):
+        NotifyPaymentStatus.model_validate(
+            {
+                "request_id": "669db10f70e3466483853c270b8f7309",
+                "data": {
+                    "order_id": "A-2023/01",
+                    "payment": {"authorization_code": None, "status": "pending"},
+                    "created_at": 30,
+                },
+            }
+        )

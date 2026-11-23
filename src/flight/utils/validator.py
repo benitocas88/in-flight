@@ -1,29 +1,40 @@
 from functools import wraps
-from typing import Callable, Dict, Type
+from typing import Any, Callable, Dict, TypeVar
 
-from marshmallow.schema import Schema
-
-# from ooks.mixins.schemas import WebhookReceiverSchema
+from pydantic import BaseModel, ValidationError
 from structlog import get_logger
+
+from flight.mixins.metas import MetaSchema, ReceiverSchema
 
 logger = get_logger(__name__)
 
+Model = TypeVar("Model", bound=BaseModel)
+Result = TypeVar("Result")
 
-def schema_validator(schema: Type[Schema]) -> Callable:
-    def _validate(fxn: Callable) -> Callable:
+
+def schema_validator(
+    schema: type[Model],
+) -> Callable[[Callable[..., Result]], Callable[..., Result]]:
+    def _validate(fxn: Callable[..., Result]) -> Callable[..., Result]:
         @wraps(fxn)
-        def _task_validator(meta: Dict, receiver: Dict, body: Dict) -> Callable:
-            """
+        def _task_validator(
+            meta: Dict[str, Any],
+            receiver: Dict[str, Any],
+            body: Dict[str, Any],
+        ) -> Result:
             try:
-                meta = MetaSchema().load(meta)
-                receiver = WebhookReceiverSchema().load(receiver)
-                body = schema().load(body)
+                validated_meta = MetaSchema.model_validate(meta)
+                validated_receiver = ReceiverSchema.model_validate(receiver)
+                validated_body = schema.model_validate(body)
             except ValidationError as exc:
-                logger.error("schema_webhook_validator", message=exc.messages)
-                raise exc
-            else:
-                return fxn(meta=meta, receiver=receiver, body=body)
-            """
+                logger.error("schema_webhook_validator", errors=exc.errors(include_input=False))
+                raise
+
+            return fxn(
+                meta=validated_meta.model_dump(mode="json"),
+                receiver=validated_receiver.model_dump(mode="json"),
+                body=validated_body.model_dump(mode="json"),
+            )
 
         return _task_validator
 
