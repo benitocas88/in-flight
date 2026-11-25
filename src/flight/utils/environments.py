@@ -23,5 +23,5 @@ class Environment:
         return env.str("ENVIRONMENT", default="local")
 
     @classmethod
-    def app_env_production(cls) -> str:
+    def app_env_production(cls) -> bool:
         return env.str("APP_ENV", default="production") == "production"

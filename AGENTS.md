@@ -14,5 +14,9 @@ to use SQS as its message broker.
   configuration.
 - Add or update focused tests for behavior changes. Use the conventions in
   `pyproject.toml`.
+- Add clear type annotations to classes, functions, and methods. Keep types
+  precise and avoid untyped code.
+- Add short, plain-language docstrings to classes and functions when their
+  purpose or flow is not obvious. Do not add long docstrings for simple code.
 - Never put credentials or other secrets in code, tests, logs, or documentation.
 - Do not add co-author trailers to commit messages.
