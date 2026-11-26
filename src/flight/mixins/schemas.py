@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -12,11 +13,11 @@ class BodySchema(BaseModel):
 class WebhookSchema(BodySchema):
     webhook_id: str = Field(default_factory=lambda: uuid4().hex)
     request_id: UUIDHex
-    data: dict
+    data: Any
 
     @model_validator(mode="before")
     @classmethod
-    def generate_webhook_id(cls, values):
+    def generate_webhook_id(cls, values: Any) -> Any:
         if isinstance(values, dict):
             return {**values, "webhook_id": uuid4().hex}
         return values

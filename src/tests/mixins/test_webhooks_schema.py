@@ -1,10 +1,11 @@
 from uuid import UUID
 
 import pytest
+from pydantic import ValidationError
+
 from flight.mixins.metas import MetaSchema, ReceiverSchema
 from flight.mixins.schemas import WebhookSchema
 from flight.orders.schemas import NotifyPaymentStatus
-from pydantic import ValidationError
 
 
 def test_webhook_schema_generates_id_and_normalizes_request_id():

@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import uuid4
 
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -13,7 +14,7 @@ class MetaSchema(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def generate_request_id(cls, values):
+    def generate_request_id(cls, values: Any) -> Any:
         if isinstance(values, dict) and not values.get("request_id"):
             return {**values, "request_id": uuid4().hex}
         return values

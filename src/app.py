@@ -5,13 +5,14 @@ from uuid import uuid4
 from celery import signals
 from celery.app.task import Task
 from flask.app import Flask
+from pydantic import ValidationError
+from structlog import get_logger
+from structlog.contextvars import bind_contextvars, clear_contextvars
+
 from flight.celery.app import make_celery
 from flight.logs.logger import make_structlog
 from flight.mixins.metas import MetaSchema
 from flight.settings.base import env
-from pydantic import ValidationError
-from structlog import get_logger
-from structlog.contextvars import bind_contextvars, clear_contextvars
 
 logger = get_logger(__name__)
 
