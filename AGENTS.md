@@ -8,6 +8,8 @@ to use SQS as its message broker.
 
 ## Working rules
 
+- Never include `Co-authored-by` trailers or AI attribution in commit messages or
+  pull request descriptions.
 - Keep changes small and focused; preserve existing behavior unless a change is
   explicitly requested.
 - Before changing a Celery task, check its callers, payload, retry behavior, and
@@ -19,4 +21,3 @@ to use SQS as its message broker.
 - Add short, plain-language docstrings to classes and functions when their
   purpose or flow is not obvious. Do not add long docstrings for simple code.
 - Never put credentials or other secrets in code, tests, logs, or documentation.
-- Do not add co-author trailers to commit messages.
