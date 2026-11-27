@@ -1,37 +1,49 @@
 ---
 name: ops-development
-description: Write concise pull request descriptions using this repository's What and Why template.
+description: Guide PR descriptions, commit messages, and staged-diff checks before commits.
 ---
 
 # Pull request descriptions
 
-When writing a PR description, use the repository's `.github/pull_request_template.md`.
-Resolve this path from the repository root, not from this skill's folder.
+Resolve repository paths from the repository root.
 
-- **What:** Describe the main changes clearly and coherently. Focus on the core work.
-- **Why:** Explain the need for the change and why this approach fits.
-- Use simple words and keep both sections brief. Include more detail only when the change
-  needs it or the developer asks for it, such as diagrams or a deeper explanation.
-- Keep the template's headings and order. Replace its prompts with accurate content.
-- Update the PR description when a new commit adds a feature, architectural change, bug
-  fix, or resolves a major failure. Skip minor non-functional changes such as typo fixes,
-  formatting, small refactors, or comment updates unless they change the PR's scope or
-  reviewer context.
-- Never include AI attribution in a PR description.
+- Use `.github/pull_request_template.md` if present. Preserve all headings and their order;
+  replace prompts with accurate content. If it is empty, has no placeholders, or is
+  absent, add the required PR content without removing existing headings; if absent, use:
+
+  ## What
+
+  ## Why
+
+- **What:** State the main changes clearly and coherently.
+- **Why:** Explain the need and why this approach fits.
+- Keep descriptions brief, use simple words, and focus on core changes. Add detail only
+  when needed or requested.
+- Update an existing PR description after commits adding a feature, architectural change,
+  bug fix, or major-failure resolution. This applies both when editing the PR directly and
+  when preparing updated text for the developer. Skip minor non-functional changes unless
+  they alter the PR's scope or reviewer context.
 
 ## Commit messages
 
-- Keep commit messages concise while accurately describing the overall intent and scope.
-- Avoid overly verbose commit bodies.
-- Never include `Co-authored-by` trailers or AI attribution.
+Keep commit messages concise and accurate to the change's intent and scope; avoid verbose
+bodies. Follow `AGENTS.md`'s rule against AI attribution and `Co-authored-by` trailers.
 
 ## Large diff pre-commit check
 
-Before running `git commit`, review the staged diff and assess the scale of substantive
-code changes. Do not treat many trivial or empty file changes (such as renames, moves, or
-small config edits) as a large diff by themselves.
+Before `git commit`, inspect only staged changes with `git diff --cached`. Count added
+plus deleted lines (not net delta or hunk context) in qualifying changes to application
+behavior or logic, meaningful unit-test logic, or migration schema/data behavior. Count
+each file containing qualifying changes.
 
-Warn and stop before committing if the staged diff contains substantial logic changes in
-more than 10 files or more than 400 changed lines. Explain that the PR may be too large
-and risks reviewer rejection without a line-by-line review. Ask the developer for explicit
-confirmation before proceeding with the commit.
+Exclude lockfiles, generated code/artifacts, pure renames or moves, formatting-only
+changes, and minor configuration edits. Count configuration changes only when they
+substantially affect application behavior.
+
+If unstaged edits exist, assess the staged diff separately; do not include unstaged edits.
+If a partial staging makes the intended commit unclear, clarify or stage the intended
+changes before assessing.
+
+If more than 10 files or more than 400 qualifying added-plus-deleted lines meet these
+criteria, stop before committing. Warn that the PR may be too large and risk rejection
+without line-by-line review, then ask for explicit confirmation before proceeding.
