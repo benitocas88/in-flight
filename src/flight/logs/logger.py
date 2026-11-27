@@ -31,8 +31,7 @@ def make_structlog() -> None:
             "formatters": {
                 "stdout": {
                     "()": structlog.stdlib.ProcessorFormatter,
-                    "foreign_pre_chain": shared_processors
-                    + [structlog.stdlib.ExtraAdder()],
+                    "foreign_pre_chain": shared_processors + [structlog.stdlib.ExtraAdder()],
                     "processors": [
                         structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                         add_event_details,
