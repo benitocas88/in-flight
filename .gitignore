@@ -1,6 +1,5 @@
 # Local environment files
 .env.local
-.env.dd
 
 # Python bytecode and environments
 __pycache__/
