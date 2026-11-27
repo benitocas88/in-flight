@@ -49,4 +49,4 @@ addopts = "-x --durations=5 -n 2"
 testpaths = ["tests"]
 python_files = "test_*"
 required_plugins = "pytest-celery"
-cache_dir = "/tmp/pytest_cache/.pytest_cache"
+cache_dir = "/tmp/pytest-cache/.pytest_cache"
