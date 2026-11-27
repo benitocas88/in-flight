@@ -1,20 +1,10 @@
 import os
-from typing import Dict, Tuple
 from uuid import uuid4
 
-from celery import signals
-from celery.app.task import Task
 from flask.app import Flask
-from pydantic import ValidationError
-from structlog import get_logger
-from structlog.contextvars import bind_contextvars, clear_contextvars
 
 from flight.celery.app import make_celery
-from flight.logs.logger import make_structlog
-from flight.mixins.metas import MetaSchema
 from flight.settings.base import env
-
-logger = get_logger(__name__)
 
 conf = os.path.join(
     os.path.dirname(__file__),
@@ -27,26 +17,6 @@ app = Flask(__name__)
 app.config.from_pyfile(conf)
 
 celery = make_celery(app)
-
-
-@signals.task_prerun.connect
-def on_task_prerun(task: Task, *_: Tuple, **kwargs: Dict) -> None:
-    binder = {"task_name": task.name}
-    sqs_meta = kwargs.get("kwargs", {}).get("meta", {})
-
-    try:
-        meta = MetaSchema.model_validate(sqs_meta)
-        binder.update(**meta.model_dump(mode="json"))
-    except ValidationError as exc:
-        logger.warning("meta_validation", errors=exc.errors(include_input=False))
-
-    clear_contextvars()
-    bind_contextvars(**binder)
-
-
-@signals.after_setup_logger.connect
-def on_after_setup_logger(*_: Tuple, **__: Dict) -> None:
-    make_structlog()
 
 
 @app.cli.command("test")
