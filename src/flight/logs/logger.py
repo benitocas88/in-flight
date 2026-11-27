@@ -7,7 +7,7 @@ from flight.utils.environments import Environment
 
 
 def make_structlog() -> None:
-    pre_chain = [
+    shared_processors = [
         structlog.contextvars.merge_contextvars,
         structlog.processors.add_log_level,
         structlog.processors.TimeStamper(fmt="iso"),
@@ -18,42 +18,36 @@ def make_structlog() -> None:
         structlog.processors.UnicodeDecoder(),
     ]
 
-    post_chain = [
-        add_event_details,
-    ]
-
     if Environment.app_env_production():
-        processors = pre_chain + post_chain
-        processor = structlog.processors.JSONRenderer()
+        renderer = structlog.processors.JSONRenderer()
     else:
-        processors = pre_chain + [structlog.processors.ExceptionPrettyPrinter()] + post_chain
-        processor = structlog.dev.ConsoleRenderer()  # type: ignore
-
-    processors.append(processor)
+        renderer = structlog.dev.ConsoleRenderer()
 
     dictConfig(
         {
             "version": 1,
-            "disable_existing_loggers": True,
+            "disable_existing_loggers": False,
             "formatters": {
                 "stdout": {
                     "()": structlog.stdlib.ProcessorFormatter,
-                    "foreign_pre_chain": pre_chain,
-                    "processor": processor,
+                    "foreign_pre_chain": shared_processors
+                    + [structlog.stdlib.ExtraAdder()],
+                    "processors": [
+                        structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                        add_event_details,
+                        renderer,
+                    ],
                 },
             },
-            "filters": {
-                "request_id": {
-                    "()": "flight.logs.filters.RequestIdFilter",
-                }
-            },
             "handlers": {
-                "null": {"class": "logging.NullHandler"},
                 "default": {
                     "class": "logging.StreamHandler",
                     "formatter": "stdout",
-                    "filters": ["request_id"],
                 },
+            },
+            "root": {
+                "handlers": ["default"],
+                "level": "INFO",
             },
             "loggers": {
                 "celery": {
@@ -65,9 +59,13 @@ def make_structlog() -> None:
         }
     )
 
-    structlog.configure_once(
-        processors=processors + [structlog.stdlib.ProcessorFormatter.wrap_for_formatter],  # type: ignore
-        context_class=structlog.threadlocal.wrap_dict(dict),
+    structlog.configure(
+        processors=[
+            structlog.stdlib.filter_by_level,
+            *shared_processors,
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
         wrapper_class=structlog.stdlib.BoundLogger,  # type: ignore
         cache_logger_on_first_use=True,

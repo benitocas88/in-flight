@@ -1,43 +1,75 @@
 # In-Flight
 
-## Updating dependencies
+## Run the worker
 
-Declare runtime dependencies in `[project].dependencies` and development-only
-dependencies in `[dependency-groups].dev` in `pyproject.toml`.
-
-After editing dependencies, regenerate the committed lockfile with:
+Make sure `.env.local` is set up, then build the Docker images:
 
 ```sh
 make build
-make run-deps
 ```
 
-`make run-deps` runs `uv lock` inside the project Docker image and updates
-`uv.lock` in the working tree. Build the image first so the target has the
-`in/flight:latest` image available. The target does not install dependencies
-on the host.
-
-To refresh all locked versions or a specific package, pass uv options through
-Make:
+Start the services and Celery worker in the background:
 
 ```sh
-make run-deps args=--upgrade
-make run-deps args="--upgrade-package flask"
+make up
 ```
 
-Review and commit the `pyproject.toml` and `uv.lock` changes together. Docker
-builds install runtime dependencies by default; the Compose development image
-also installs the `dev` dependency group.
+Follow the service logs:
+
+```sh
+make logs
+```
+
+Stop and remove the services:
+
+```sh
+make down
+```
+
+## Update dependencies
+
+The dependency commands use the existing `in/flight:latest` image. On first
+use, build it with the current `uv.lock`:
+
+```sh
+make build
+```
+
+After changing dependencies in `pyproject.toml`, run these commands in order:
+
+```sh
+make lock
+make sync-deps
+make build
+```
+
+`make lock` refreshes `uv.lock`. `make sync-deps` installs from that lockfile
+inside Docker. `make build` then puts those dependencies in the worker image.
+`uv sync` can also update a stale lockfile, but running `make lock` first makes
+the order clear.
+
+To upgrade dependencies allowed by the version pins in `pyproject.toml` and
+refresh the lockfile, run:
+
+```sh
+make upgrade-deps
+```
+
+Exact version pins in `pyproject.toml` must be changed before those direct
+dependencies can upgrade.
+
+Review the `pyproject.toml` and `uv.lock` changes together. Docker builds use
+the lockfile to install the worker's dependencies.
 
 ## Formatting and linting
 
-Ruff handles linting, import sorting, and formatting. Run checks with:
+Run lint checks with:
 
 ```sh
 make run-linting
 ```
 
-Apply safe lint fixes, sort imports, and format the source with:
+Apply fixes with:
 
 ```sh
 make run-linting fix=yes
