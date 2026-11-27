@@ -7,7 +7,7 @@ from flight.utils.environments import Environment
 
 
 def make_structlog() -> None:
-    shared_processors = [
+    shared_processors: list[structlog.typing.Processor] = [
         structlog.contextvars.merge_contextvars,
         structlog.processors.add_log_level,
         structlog.processors.TimeStamper(fmt="iso"),
@@ -18,6 +18,7 @@ def make_structlog() -> None:
         structlog.processors.UnicodeDecoder(),
     ]
 
+    renderer: structlog.typing.Processor
     if Environment.app_env_production():
         renderer = structlog.processors.JSONRenderer()
     else:
@@ -30,8 +31,7 @@ def make_structlog() -> None:
             "formatters": {
                 "stdout": {
                     "()": structlog.stdlib.ProcessorFormatter,
-                    "foreign_pre_chain": shared_processors
-                    + [structlog.stdlib.ExtraAdder()],
+                    "foreign_pre_chain": shared_processors + [structlog.stdlib.ExtraAdder()],
                     "processors": [
                         structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                         add_event_details,
@@ -67,6 +67,6 @@ def make_structlog() -> None:
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
-        wrapper_class=structlog.stdlib.BoundLogger,  # type: ignore
+        wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
