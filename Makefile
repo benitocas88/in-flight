@@ -1,6 +1,7 @@
 COMPOSE_FILE = docker compose
 UV_IMAGE = in/flight:latest
 UV_DOCKER = docker run --rm \
+	--user "$(shell id -u):$(shell id -g)" \
 	--env HOME=/tmp \
 	--env UV_PROJECT_ENVIRONMENT=/tmp/uv-project-venv \
 	--volume "$(CURDIR):/opt/project:rw" \
@@ -82,7 +83,12 @@ run-linting:
 # Usage: make run-typer
 .PHONY: run-typer
 run-typer:
-	$(COMPOSE_FILE) run --rm flipys sh /opt/scripts/run-typer.sh
+	docker run --rm \
+		--volume "$(CURDIR)/src:/home/in-flight/app:ro" \
+		--volume "$(CURDIR)/mypy.ini:/home/in-flight/mypy.ini:ro" \
+		--volume "$(CURDIR)/scripts/run-typer.sh:/opt/scripts/run-typer.sh:ro" \
+		--workdir /home/in-flight \
+		$(UV_IMAGE) sh /opt/scripts/run-typer.sh
 
 # Run tests. Set name to select a test.
 # Usage: make run-tests
